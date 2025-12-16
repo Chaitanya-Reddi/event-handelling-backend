@@ -5,7 +5,7 @@ const { createEvent, getAllEvents, updateEvent, deleteEvent }=require('../contro
 
 eventRouter.post('/create/event',auth,createEvent)
 eventRouter.get('/get/events',getAllEvents)
-eventRouter.patch('/update/event/:id',updateEvent)
+eventRouter.patch('/update/event/:id',auth,updateEvent)
 eventRouter.delete('/delete/event/:id',deleteEvent)
 
 
