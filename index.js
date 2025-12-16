@@ -7,7 +7,7 @@ const route=require('./src/routes/index')
 
 const app=express();
 app.use(express.json());
-app.use(cookieParser());
+app.use(cookieParser()); //allows the jwt token accessed from the frontend
 app.use(cors({
     credentials:true
 }));

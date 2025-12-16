@@ -1,15 +1,16 @@
-const User = require('../models/User')
+const User = require('../models/User') 
 const bcrypt = require('bcryptjs')
-const generateToken=require('../lib/utils');
+const generateToken = require('../lib/utils');
 const userRegister = async (req, res) => {
-    const {userName, email, password } = req.body;
+    const { userName, email, password } = req.body;
+    // checking the fields
     if (!email || !password || !userName)
         return res.status(400).json({ message: "All fields are required" });
     if (!email)
         return res.status(400).json({ message: "email required" });
     if (!password)
         return res.status(400).json({ message: "password required" });
-    if(!userName)
+    if (!userName)
         return res.status(400).json({ message: "username required" });
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailRegex.test(email))
@@ -32,12 +33,12 @@ const userRegister = async (req, res) => {
         })
 
         if (newUser) {
-            generateToken(newUser._id, res);
+            generateToken(newUser._id, res); //function to get the jwt token
             await newUser.save();
             res.status(201).json({
                 id: newUser._id,
                 email: newUser.email,
-                userName:newUser.userName,
+                userName: newUser.userName,
                 message: "User registered successfully"
             });
         } else {
@@ -50,34 +51,35 @@ const userRegister = async (req, res) => {
 }
 
 const userLogin = async (req, res) => {
-    const {email,password}=req.body;
+    const { email, password } = req.body;
     try {
-        const getUser=await User.findOne({email});
-        if(!getUser) return res.status(400).json({message:"Invalid credentials"});
-        const isPasswordCorrect=await bcrypt.compare(password,getUser.password);
-        if(!isPasswordCorrect) return res.status(400).json({message:"Invalid credentials"});
-        generateToken(getUser._id,res);
+        const getUser = await User.findOne({ email });
+        if (!getUser) return res.status(400).json({ message: "Invalid credentials" });
+        const isPasswordCorrect = await bcrypt.compare(password, getUser.password);
+        if (!isPasswordCorrect) return res.status(400).json({ message: "Invalid credentials" });
+
+        generateToken(getUser._id, res);
 
         res.status(200).json({
-            id:getUser._id,
-            userName:getUser.userName,
-            email:getUser.email,
-            message:"Login successful"
+            id: getUser._id,
+            userName: getUser.userName,
+            email: getUser.email,
+            message: "Login successful"
         });
     } catch (error) {
         console.log(error);
         res.status(500).json({
-            message:"login failed"
+            message: "login failed"
         });
     }
 }
 
-const userLogout=(req,res)=>{
-    res.cookie("jwt","",{maxAge:0,httpOnly:true})
+const userLogout = (req, res) => {
+    res.cookie("jwt", "", { maxAge: 0, httpOnly: true }) //removing the token from the cookie
     res.status(200).json({
-        message:"logged out successfully"
+        message: "logged out successfully"
     });
 }
 
-module.exports = { userLogin, userRegister,userLogout };
+module.exports = { userLogin, userRegister, userLogout };
 
