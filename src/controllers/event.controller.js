@@ -1,16 +1,18 @@
 const Event = require('../models/Event')
 
 const createEvent = async (req, res) => {
+    console.log(req.body)
+    console.log(req.file);
     const {
         title,
         description,
         dateTime,
         location,
         capacity,
-        imageUrl
+        // imageUrl
     } = req.body;
     // checking the fields
-    if (!title || !description || !dateTime || !location || !imageUrl || !capacity)
+    if (!title || !description || !dateTime || !location || !capacity)
         return res.status(400).json({ message: "All fields are required" });
     try {
         const newEvent = new Event({
@@ -19,7 +21,7 @@ const createEvent = async (req, res) => {
             dateTime,
             location,
             capacity,
-            imageUrl,
+            imageUrl:req.file?.path || null,
             createdBy: req.user.userId, //from the middle ware
             currentCount: 0
         });
