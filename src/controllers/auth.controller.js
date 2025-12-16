@@ -35,7 +35,7 @@ const userRegister = async (req, res) => {
             generateToken(newUser._id, res);
             await newUser.save();
             res.status(201).json({
-                _id: newUser._id,
+                id: newUser._id,
                 email: newUser.email,
                 userName:newUser.userName,
                 message: "User registered successfully"
@@ -59,7 +59,7 @@ const userLogin = async (req, res) => {
         generateToken(getUser._id,res);
 
         res.status(200).json({
-            _id:getUser._id,
+            id:getUser._id,
             userName:getUser.userName,
             email:getUser.email,
             message:"Login successful"
