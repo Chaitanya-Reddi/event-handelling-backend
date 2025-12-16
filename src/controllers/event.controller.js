@@ -52,13 +52,13 @@ const getAllEvents = async (req, res) => {
 const updateEvent = async (req, res) => {
     try {
         const id = req.params.id;
-        const event = await Event.findById(req.params.id);
+        const event = await Event.findById(id);
         if (!event)
             return res.status(404).json({ message: "Event not found" });
         if (event.createdBy.toString() !== req.user.userId)
             return res.status(403).json({ message: "Not authorized" });
         const updatedEvent = await Event.findByIdAndUpdate(
-            req.params.id,
+            id,
             req.body,
             { new: true }
         );
@@ -73,7 +73,23 @@ const updateEvent = async (req, res) => {
 }
 
 const deleteEvent = async (req, res) => {
-    console.log("delete event");
+    
+    try{
+        const id=req.params.id;
+        const event=await Event.findById(id);
+        if(!event)
+            return res.status(404).json({message:"Event not found"});
+        if(event.createdBy.toString()!==req.user.userId)
+            return res.status(403).json({message:"Not authorized"});
+        const deletedEvent=await Event.findByIdAndDelete(id);
+        res.status(200).json({
+            message:"Event deleted",
+            deletedEvent:deletedEvent
+        });
+    }catch(err){
+        console.log(err);
+        res.status(500).json({message:"Internal Error"});
+    }
 }
 
 module.exports = { createEvent, getAllEvents, updateEvent, deleteEvent };
