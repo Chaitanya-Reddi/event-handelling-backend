@@ -1,4 +1,4 @@
-const User = require('../models/User') 
+const User = require('../models/User')
 const bcrypt = require('bcryptjs')
 const generateToken = require('../lib/utils');
 const userRegister = async (req, res) => {
@@ -12,7 +12,7 @@ const userRegister = async (req, res) => {
         return res.status(400).json({ message: "password required" });
     if (!userName)
         return res.status(400).json({ message: "username required" });
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
     if (!emailRegex.test(email))
         return res.status(400).json({ message: "Please enter valid email" });
     if (password.length < 6)
@@ -81,5 +81,20 @@ const userLogout = (req, res) => {
     });
 }
 
-module.exports = { userLogin, userRegister, userLogout };
+const authUser = async (req, res) => {
+    try {
+        res.json({
+            id: req.user.userId,
+            auth: "true",
+            message: "User authenticated"
+        })
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            message: "Internal error"
+        })
+    }
+}
+
+module.exports = { userLogin, userRegister, userLogout, authUser };
 

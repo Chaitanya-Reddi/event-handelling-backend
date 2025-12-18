@@ -9,7 +9,7 @@ const generateToken=async(userId,res)=>{
             httpOnly:true,
             secure: process.env.APPLICATION==="production" ? true:false,
         });
-        // return token;
+        return token;
     }catch(err){
         console.log(err);
     }
